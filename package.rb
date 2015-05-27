@@ -1,6 +1,53 @@
+#QUESTION
+#######################################################################################################
+
+# We store prices of hotels on a per day basis, as in price of a hotel on 10th Jun is say Rs 1000, 
+# and on 11th Jun is Rs 1400, say. 
+# Now, if a person wants to book the hotel for two nights starting 10th Jun, 
+# we are going to charge him Rs 2400 ( 1000 + 1400 ).. 
+
+# Suppose we have each day from 1st of jan to 31st Dec  ( for a hotel ) mapped to a price
+# 1st Jan - > Rs ...
+# 2nd Jan  -> Rs ...
+# ..
+# 30 Dec -> Rs...
+# 31st Dec -> Rs ...
+
+# Also, we don't let a person book more than 15 nights in a single booking... 
+# This means if a person wishes to book from 1st Mar to 16 Mar, we allow, 
+#so do we 1st Mar to 10th Mar, but 1st Mar to 17 Mar is not allowed, 
+#and so isn't 1st Mar to 28th Mar ( Stay length more than 15 nights )..
+
+# Using what we described above, we need to::
+
+# 1. 
+# Create a cache type structure which has all the allowed configurations as the keys 
+# and the respective prices as the value. 
+# Say stay of 6 days from 1st Aug to 7th Aug as the key and  total price for the stay 
+# ( 1st Aug Price + 2nd Aug Price + ... + 7th Aug price) as the value.. 
+# So for a particular checkin day, we can have 15 different configurations, 
+# 1 night stay, 2 nights' stay, ..., 15 nights' stay..
+
+# 2. 
+# Take as input the days whose prices change with the corresponding new values 
+# and list all the configurations that change with those price changes.
+ 
+# Suppose we change the price of some day, say 10th Jun, we need to list all the configurations that change.. 
+# Also, if we change more than one day's price, say 10th Jun's and 15th Jun's, 
+# we need to list all the configurations that change.. 
+
+# 3. Mathematical modeling, as in a formula, or an approach which gives the number of configuration changes 
+# with say n days' price change..
+
+#ANSWER
+##########################################################################################
+
 class Package
 	@@hotel_per_night_cost_hash = {} 
 	@@package_cache = {}
+	# ASUMING THAT GIVEN YEAR IS A LEAP YEAR FEB 29 DAYS, WITH SOME MINUTE CHANGES WE CAN EASILY HANDLE 
+	# NON LEAP YEAR CASE ALSO, DUE TO LACK OF TIME NOT HANDLING NOW
+
 	@@month_days = {1 => 31, 2 => 29, 3 => 31, 4 => 30, 5 => 31, 6 => 30, 7 => 31, 8 => 31, 9 => 30, 10 => 31, 11 => 30, 12 => 31}
 	MAX_PACKAGE_NIGHTS = 15
 	
@@ -67,10 +114,15 @@ class Package
 			monthly(@@month_days[month], month)
 			month += 1
 		end
-		#puts ">>>> @package_cache >>> #{@package_cache}"
 	end
 
 	def change_hotel_price_per_night
+		puts "FUNCTION TO CHANGE NIGHT CHARGES OF HOTEL "
+		puts "ENTER MONTH AND DATE YOU WANT TO CHANGE PRICE"
+		puts "ENTER MONTH IN NUMERIC VALUES FOR EXAMPLE 1 FOR JANUARY AND 3 FOR MARCH"
+		puts "ENTER DATE IN NUMERIC FROM 1 TO LAST DATE OF MONTH (BASED ON THE MONTH)"
+		puts "LAST DATE OF JANUARY IS 31 AND LAST DATE OF APRIL IS 30"
+		puts "IF KEEP ASKING YOU UNTIL YOU GIVE CORRECT DATA"
 		input = ""
 		puts "Plz inter date and price"
 		until input == 'done'
@@ -86,7 +138,7 @@ class Package
 			end
 			p = ""
 			until p.to_i != 0
-				puts "Enter price"
+				puts "Enter new price"
 				p = gets.chomp.to_i
 			end
 			change_in_price = -(@@hotel_per_night_cost_hash["#{d}/#{m}"] - p)
@@ -103,7 +155,7 @@ class Package
 				get_all_packages_and_modify_them(start_date, last_month, change_in_price)
 			end
 			@@hotel_per_night_cost_hash["#{d}/#{m}"] = p
-			puts "Enter done if u r done else continue.."
+			puts "Enter done if u r done else hit enter key"
 			input = gets.chomp
 		end
 		#puts ">>>>> @package_cache >>>> #{@package_cache}"
@@ -116,21 +168,25 @@ class Package
 			while j >= 1
 				nights = MAX_PACKAGE_NIGHTS - j + 1
 				key = "#{month}/#{date}/#{nights}"
-			    initial_price = @@package_cache[key]
+				initial_price = @@package_cache[key]
 				@@package_cache[key] += price_change
-				puts " >> month >> #{month} >> start date >> #{date} >> package nights >> #{nights} >> initial price >> #{initial_price} >> after change >> #{@@package_cache[key]}"
+				puts " >> month >> #{month} >> start date >> #{date} >> package nights >> #{nights} >> initial price >> #{initial_price} >> >> after change >> #{@@package_cache[key]}"
 				j -= 1
 			end			
 			i += 1
 			date += 1
 			if date > @@month_days[month]
 				date = 1
-				month = (month + 1)%12
+	#			month = (month + 1)%12
+				if month == 12
+					month = 1 
+				else
+					month += 1
+				end
 			end
 		end
 	end
-	Array.new(10) { |i|  }
-
+	
 	def get_configurations(date, month, change_hash)
 		i = 1
 		while i <= MAX_PACKAGE_NIGHTS
@@ -154,6 +210,12 @@ class Package
 	end
 
 	def number_of_configuration_change
+		puts "FUNCTION TO GET ALL NUMBER OF CONFIGURATION CHANGES BASED ON HOTEL NIGHT PRICE CHANGE"
+		puts "ENTER MONTH AND DATE YOU WANT TO CHANGE PRICE"
+		puts "ENTER MONTH IN NUMERIC VALUES FOR EXAMPLE 1 FOR JANUARY AND 3 FOR MARCH"
+		puts "ENTER DATE IN NUMERIC FROM 1 TO LAST DATE OF MONTH (BASED ON THE MONTH)"
+		puts "LAST DATE OF JANUARY IS 31 AND LAST DATE OF APRIL IS 30"
+		puts "IF KEEP ASKING YOU UNTIL YOU GIVE CORRECT DATA"
 		change_hash = {}
 		input = ""
 		until input == 'done'
@@ -167,7 +229,7 @@ class Package
 				puts 'Enter date'
 				d = gets.chomp.to_i
 			end	
-			puts "Enter done if u r done else continue.. "
+			puts "Enter done if u r done else hit enter key "
 			input = gets.chomp
 			if d >= 15
 				start_date = d - MAX_PACKAGE_NIGHTS + 1
@@ -182,14 +244,26 @@ class Package
 				get_configurations(start_date, last_month, change_hash)
 			end
 		end
-		size = 0
-		total_number_of_configuration_change = change_hash.each{|h,k| size += k.size}
-		puts size
-		puts total_number_of_configuration_change
+		total_number_of_configuration_change = 0
+		change_hash.each{|h,k| total_number_of_configuration_change += k.size}
+		puts "TOTAL NUMBER OF CONFIGURATION CHANGES ARE #{total_number_of_configuration_change}"
+		#puts change_hash
 	end
 end
 
+# AT THE TIME OF INITIALIZE WE ARE SEEDING HOTEL PRICE (ASUMING THAT HOTEL PRICE IS BETWEEN 500 AND 1000)
+# THROUGH RANDOM GENERATOR
+# AND ALSO CREATING CONFIGURATION CAHCHE STRUCTURE
+
 obj = Package.new
-#obj.change_hotel_price_per_night
+
+obj.change_hotel_price_per_night
+
+# TOTAL NUMBER OF CONFIGURATION CHANGE DEPENDS ON DATES, FOR EXAMPLE WE INPUT 3 DATES SAY 1ST JANUARY,
+# 15 JUNE AND 21 AUG THEN TOTAL NUMBER OF CONFIGURATION CHANGE WILL BE SUM OF 
+# CONFIG_CHANGE(1ST JANUARY) + CONFIG_CHANGE(15 JUNE) + CONFIG_CHANGE(21 AUG)
+
+# BUT IF TWO DATES ARE, SAY 21 AUG AND 27 AUG THEN THERE WILL SOME INTERSECTION WHICH IS COMMON BETWEEN BOTH
+# SO IN THIS CASE IT WILL BE  CONFIG_CHANGE(21 AUG) + CONFIG_CHANGE(21 AUG) - INTERSECTION_CONFIG
 obj.number_of_configuration_change
 
