@@ -230,6 +230,39 @@ class LinkedList
       new_head
     end
     
+    def add(list1_head, list2_head)
+      list1_head.reverse
+      list2_head.reverse
+      current1 = list1_head.head
+      current2 = list2_head.head
+      carry = 0
+      result = LinkedList.new(nil)
+      while current1 && current2
+        sum = current1.value + current2.value + carry
+        carry = sum / 10
+        res = sum % 10
+        result.push(res)
+        current1 = current1.next
+        current2 = current2.next
+      end
+
+      while current1
+        sum = (carry != 0) ? (current1.value + carry) : current1.value
+        carry = sum / 10
+        res = sum % 10
+        result.push(res)
+        current1 = current1.next
+      end
+
+      while current2
+        sum = (carry != 0) ? (current2.value + carry) : current2.value
+        carry = sum / 10
+        res = sum % 10
+        result.push(res)
+        current1 = current2.next
+      end
+      result.reverse
+    end
   end
 end
 
@@ -266,19 +299,31 @@ head = nil
 
 # LinkedList.print_list(LinkedList.merge(list1.head, list2.head))
 
-list = LinkedList.new(nil)
-list.push(11)
-list.push(2)
-list.push(3)
-list.push(14)
-list.push(7)
-list.push(9)
-list.push(13)
-list.push(4)
-##### Crete loop 
-list.tail.next = list.search_node_by_value(14)
-##### Remove loop
-list.remove_loop
-LinkedList.print_list(list.head)
+# list = LinkedList.new(nil)
+# list.push(11)
+# list.push(2)
+# list.push(3)
+# list.push(14)
+# list.push(7)
+# list.push(9)
+# list.push(13)
+# list.push(4)
+# ##### Crete loop 
+# list.tail.next = list.search_node_by_value(14)
+# ##### Remove loop
+# list.remove_loop
+# LinkedList.print_list(list.head)
 #LinkedList.print_list(LinkedList.reverse_in_group_size(list.head, 3))
 #LinkedList.print_list(LinkedList.merge_sort(list.head))
+
+list1 = LinkedList.new(nil)
+list1.push(2)
+list1.push(8)
+list1.push(9)
+
+list2 = LinkedList.new(nil)
+list2.push(3)
+list2.push(4)
+list2.push(7)
+
+LinkedList.print_list LinkedList.add(list1, list2)
