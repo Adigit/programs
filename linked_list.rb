@@ -7,7 +7,7 @@ class Node
 end
 
 class LinkedList
-  attr_accessor :head
+  attr_accessor :head, :tail
 
   def initialize(head)
     @head = head
@@ -90,6 +90,52 @@ class LinkedList
       current = temp.next
     end
     @head = previous
+  end
+
+  def search_node_by_value(value)
+    current = @head
+    while current && current.value != value
+      current = current.next
+    end
+    return current
+  end
+
+  def contains_loop?
+    head = @head
+    return false if head.nil? || head.next.nil?
+    slow = head
+    fast = head.next
+    while fast
+      slow = slow.next
+      fast = fast.next
+      return true if fast == slow
+      fast = fast.next 
+      return true if fast == slow
+    end
+    false
+  end
+
+  def remove_loop
+    head = @head
+    if contains_loop?
+      current = head
+      while true
+        slow = current
+        fast = current.next
+        while true
+          slow = slow.next
+          break if fast.next == current || fast.next == slow
+          fast = fast.next
+          break if fast.next == current || fast.next == slow
+          fast = fast.next
+        end
+        if fast.next == current
+          fast.next = nil
+          break  
+        end
+        current = current.next
+      end
+    end
   end
 
   class << self
@@ -183,6 +229,7 @@ class LinkedList
       end
       new_head
     end
+    
   end
 end
 
@@ -228,7 +275,10 @@ list.push(7)
 list.push(9)
 list.push(13)
 list.push(4)
+##### Crete loop 
+list.tail.next = list.search_node_by_value(14)
+##### Remove loop
+list.remove_loop
 LinkedList.print_list(list.head)
-p ">>>>> "
-LinkedList.print_list(LinkedList.reverse_in_group_size(list.head, 3))
+#LinkedList.print_list(LinkedList.reverse_in_group_size(list.head, 3))
 #LinkedList.print_list(LinkedList.merge_sort(list.head))
