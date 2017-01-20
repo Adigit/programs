@@ -160,8 +160,28 @@ class LinkedList
       end
     end
 
-    def 
-      
+    def reverse_in_group_size(head, size)
+      return head unless head || size <= 1
+      current = head
+      local_head = nil 
+      new_head =  nil
+      while current
+        k = size
+        previous = nil
+        previous_list_head = local_head
+        local_head = nil
+        while k > 0 && current
+          local_head = current if local_head.nil?
+          temp = current.next
+          current.next = previous
+          previous = current
+          current = temp
+          k = k -1
+        end
+        previous_list_head.next = previous unless previous_list_head.nil?
+        new_head = previous unless new_head
+      end
+      new_head
     end
   end
 end
@@ -208,4 +228,7 @@ list.push(7)
 list.push(9)
 list.push(13)
 list.push(4)
-LinkedList.print_list(LinkedList.merge_sort(list.head))
+LinkedList.print_list(list.head)
+p ">>>>> "
+LinkedList.print_list(LinkedList.reverse_in_group_size(list.head, 3))
+#LinkedList.print_list(LinkedList.merge_sort(list.head))
