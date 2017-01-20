@@ -1,0 +1,723 @@
+Devise registration 
+
+Started POST "/users/sign_in" for 127.0.0.1 at 2017-01-18 19:50:08 +0530
+Processing by SessionsController#create as HTML
+  Parameters: {"utf8"=>"✓", "authenticity_token"=>"0dJ83BMz3YaakCuq7Ti0+5m/mZy3KRs9dIlzznVVhCN8HSUp7UC2TOm0cvPwH6Sw3ukWSmdyhuA/MYDFfWTqbQ==", "user"=>{"email"=>"aditya.srivastava@sd2labs.com", "password"=>"[FILTERED]"}}
+
+[5, 14] in /home/sd2labs/workspace/AWS_Migration/app/controllers/sessions_controller.rb
+    5:     super
+    6:   end
+    7: 
+    8:   def create
+    9:     byebug
+=> 10:     if self.resource = warden.authenticate(auth_options)
+   11:       # set_flash_message!(:notice, :signed_in)
+   12:       sign_in(resource_name, resource)
+   13:       yield resource if block_given?
+   14:       respond_with resource, location: after_sign_in_path_for(resource)
+(byebug) s
+
+[136, 145] in /home/sd2labs/.rvm/gems/ruby-2.3.1@aws-migration/gems/devise-4.2.0/lib/devise/controllers/helpers.rb
+   136:         end
+   137:       end
+   138: 
+   139:       # The main accessor for the warden proxy instance
+   140:       def warden
+=> 141:         request.env['warden'] or raise MissingWarden
+   142:       end
+   143: 
+   144:       # Return true if it's a devise_controller. false to all controllers unless
+   145:       # the controllers defined inside devise. Useful if you want to apply a before
+(byebug) request.env['warden']
+Warden::Proxy:48090500 @config={:default_scope=>:admin_user, :scope_defaults=>{}, :default_strategies=>{:admin_user=>[:rememberable, :database_authenticatable], :user=>[:rememberable, :database_authenticatable]}, :intercept_401=>false, :failure_app=>#<Devise::Delegator:0x00000009d1c5a0>}
+
+>>>>>>>>>>>>>>>>>>>>
+
+[44, 53] in /home/sd2labs/.rvm/gems/ruby-2.3.1@aws-migration/gems/devise-4.2.0/app/controllers/devise/sessions_controller.rb
+   44:     methods << :password if resource.respond_to?(:password)
+   45:     { methods: methods, only: [:password] }
+   46:   end
+   47: 
+   48:   def auth_options
+=> 49:     { scope: resource_name, recall: "#{controller_path}#new" }
+   50:   end
+   51: 
+   52:   def translation_scope
+   53:     'devise.sessions'
+(byebug) resource_name,
+*** SyntaxError Exception: (byebug):1: syntax error, unexpected end-of-input, expecting '='
+resource_name,
+              ^
+
+nil
+(byebug) resource_name
+:user
+(byebug) controller_path
+"sessions"
+(byebug) 
+
+>>>>>>>>>>>>>>>>>>>>>>>>
+
+[99, 108] in /home/sd2labs/.rvm/gems/ruby-2.3.1@aws-migration/gems/warden-1.2.6/lib/warden/proxy.rb
+    99:     # Example:
+   100:     #   env['warden'].authenticate(:password, :basic, :scope => :sudo)
+   101:     #
+   102:     # :api: public
+   103:     def authenticate(*args)
+=> 104:       user, _opts = _perform_authentication(*args)
+   105:       user
+   106:     end
+   107: 
+   108:     # Same API as authenticated, but returns a boolean instead of a user.
+
+(byebug) args
+[{:scope=>:user, :recall=>"sessions#new"}]
+
+>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+[312, 321] in /home/sd2labs/.rvm/gems/ruby-2.3.1@aws-migration/gems/warden-1.2.6/lib/warden/proxy.rb
+   312:     end
+   313: 
+   314:     private
+   315: 
+   316:     def _perform_authentication(*args)
+=> 317:       scope, opts = _retrieve_scope_and_opts(args)
+   318:       user = nil
+   319: 
+   320:       # Look for an existing user in the session for this scope.
+   321:       # If there was no user in the session. See if we can get one from the request.
+(byebug) s
+
+[329, 338] in /home/sd2labs/.rvm/gems/ruby-2.3.1@aws-migration/gems/warden-1.2.6/lib/warden/proxy.rb
+   329: 
+   330:       [@users[scope], opts]
+   331:     end
+   332: 
+   333:     def _retrieve_scope_and_opts(args) #:nodoc:
+=> 334:       opts  = args.last.is_a?(Hash) ? args.pop : {}
+   335:       scope = opts[:scope] || @config.default_scope
+   336:       opts  = (@config[:scope_defaults][scope] || {}).merge(opts)
+   337:       [scope, opts]
+   338:     end
+(byebug) args
+[{:scope=>:user, :recall=>"sessions#new"}]
+(byebug) n
+
+[330, 339] in /home/sd2labs/.rvm/gems/ruby-2.3.1@aws-migration/gems/warden-1.2.6/lib/warden/proxy.rb
+   330:       [@users[scope], opts]
+   331:     end
+   332: 
+   333:     def _retrieve_scope_and_opts(args) #:nodoc:
+   334:       opts  = args.last.is_a?(Hash) ? args.pop : {}
+=> 335:       scope = opts[:scope] || @config.default_scope
+   336:       opts  = (@config[:scope_defaults][scope] || {}).merge(opts)
+   337:       [scope, opts]
+   338:     end
+   339: 
+(byebug) opts
+{:scope=>:user, :recall=>"sessions#new"}
+(byebug) @config
+{:default_scope=>:admin_user, :scope_defaults=>{}, :default_strategies=>{:admin_user=>[:rememberable, :database_authenticatable], :user=>[:rememberable, :database_authenticatable]}, :intercept_401=>false, :failure_app=>#<Devise::Delegator:0x00000009d1c5a0>}
+(byebug) @config.default_scope
+:admin_user
+(byebug) n
+
+[331, 340] in /home/sd2labs/.rvm/gems/ruby-2.3.1@aws-migration/gems/warden-1.2.6/lib/warden/proxy.rb
+   331:     end
+   332: 
+   333:     def _retrieve_scope_and_opts(args) #:nodoc:
+   334:       opts  = args.last.is_a?(Hash) ? args.pop : {}
+   335:       scope = opts[:scope] || @config.default_scope
+=> 336:       opts  = (@config[:scope_defaults][scope] || {}).merge(opts)
+   337:       [scope, opts]
+   338:     end
+   339: 
+   340:     # Run the strategies for a given scope
+(byebug) scope
+:user
+(byebug) @config[:scope_defaults][scope]
+nil
+(byebug) @config[:scope_defaults]
+{}
+(byebug) n
+
+[332, 341] in /home/sd2labs/.rvm/gems/ruby-2.3.1@aws-migration/gems/warden-1.2.6/lib/warden/proxy.rb
+   332: 
+   333:     def _retrieve_scope_and_opts(args) #:nodoc:
+   334:       opts  = args.last.is_a?(Hash) ? args.pop : {}
+   335:       scope = opts[:scope] || @config.default_scope
+   336:       opts  = (@config[:scope_defaults][scope] || {}).merge(opts)
+=> 337:       [scope, opts]
+   338:     end
+   339: 
+   340:     # Run the strategies for a given scope
+   341:     def _run_strategies_for(scope, args) #:nodoc:
+(byebug) opts
+{:scope=>:user, :recall=>"sessions#new"}
+(byebug) scope
+:user
+
+>>>>>>>>>>>>>>>>>>>
+
+[313, 322] in /home/sd2labs/.rvm/gems/ruby-2.3.1@aws-migration/gems/warden-1.2.6/lib/warden/proxy.rb
+   313: 
+   314:     private
+   315: 
+   316:     def _perform_authentication(*args)
+   317:       scope, opts = _retrieve_scope_and_opts(args)
+=> 318:       user = nil
+   319: 
+   320:       # Look for an existing user in the session for this scope.
+   321:       # If there was no user in the session. See if we can get one from the request.
+   322:       return user, opts if user = user(opts.merge(:scope => scope))
+(byebug) n
+
+[317, 326] in /home/sd2labs/.rvm/gems/ruby-2.3.1@aws-migration/gems/warden-1.2.6/lib/warden/proxy.rb
+   317:       scope, opts = _retrieve_scope_and_opts(args)
+   318:       user = nil
+   319: 
+   320:       # Look for an existing user in the session for this scope.
+   321:       # If there was no user in the session. See if we can get one from the request.
+=> 322:       return user, opts if user = user(opts.merge(:scope => scope))
+   323:       _run_strategies_for(scope, args)
+   324: 
+   325:       if winning_strategy && winning_strategy.successful?
+   326:         opts[:store] = opts.fetch(:store, winning_strategy.store?)
+(byebug) s
+
+[201, 210] in /home/sd2labs/.rvm/gems/ruby-2.3.1@aws-migration/gems/warden-1.2.6/lib/warden/proxy.rb
+   201:     #  # with a scope and run_callbacks option
+   202:     #  env['warden'].user(:scope => :admin, :run_callbacks => true)
+   203:     #
+   204:     # :api: public
+   205:     def user(argument = {})
+=> 206:       opts  = argument.is_a?(Hash) ? argument : { :scope => argument }
+   207:       scope = (opts[:scope] ||= @config.default_scope)
+   208: 
+   209:       if @users.has_key?(scope)
+   210:         @users[scope]
+(byebug) n
+
+[202, 211] in /home/sd2labs/.rvm/gems/ruby-2.3.1@aws-migration/gems/warden-1.2.6/lib/warden/proxy.rb
+   202:     #  env['warden'].user(:scope => :admin, :run_callbacks => true)
+   203:     #
+   204:     # :api: public
+   205:     def user(argument = {})
+   206:       opts  = argument.is_a?(Hash) ? argument : { :scope => argument }
+=> 207:       scope = (opts[:scope] ||= @config.default_scope)
+   208: 
+   209:       if @users.has_key?(scope)
+   210:         @users[scope]
+   211:       else
+(byebug) argument
+{:scope=>:user, :recall=>"sessions#new"}
+(byebug) opts
+{:scope=>:user, :recall=>"sessions#new"}
+(byebug) @config.default_scope
+:admin_user
+(byebug) n
+
+[204, 213] in /home/sd2labs/.rvm/gems/ruby-2.3.1@aws-migration/gems/warden-1.2.6/lib/warden/proxy.rb
+   204:     # :api: public
+   205:     def user(argument = {})
+   206:       opts  = argument.is_a?(Hash) ? argument : { :scope => argument }
+   207:       scope = (opts[:scope] ||= @config.default_scope)
+   208: 
+=> 209:       if @users.has_key?(scope)
+   210:         @users[scope]
+   211:       else
+   212:         unless user = session_serializer.fetch(scope)
+   213:           run_callbacks = opts.fetch(:run_callbacks, true)
+(byebug) scope
+:user
+
+
+>>>>>>>>>>>>>>>>>>>>>
+
+[205, 214] in /home/sd2labs/.rvm/gems/ruby-2.3.1@aws-migration/gems/warden-1.2.6/lib/warden/proxy.rb
+   205:     def user(argument = {})
+   206:       opts  = argument.is_a?(Hash) ? argument : { :scope => argument }
+   207:       scope = (opts[:scope] ||= @config.default_scope)
+   208: 
+   209:       if @users.has_key?(scope)
+=> 210:         @users[scope]
+   211:       else
+   212:         unless user = session_serializer.fetch(scope)
+   213:           run_callbacks = opts.fetch(:run_callbacks, true)
+   214:           manager._run_callbacks(:after_failed_fetch, user, self, :scope => scope) if run_callbacks
+(byebug) n
+
+[318, 327] in /home/sd2labs/.rvm/gems/ruby-2.3.1@aws-migration/gems/warden-1.2.6/lib/warden/proxy.rb
+   318:       user = nil
+   319: 
+   320:       # Look for an existing user in the session for this scope.
+   321:       # If there was no user in the session. See if we can get one from the request.
+   322:       return user, opts if user = user(opts.merge(:scope => scope))
+=> 323:       _run_strategies_for(scope, args)
+   324: 
+   325:       if winning_strategy && winning_strategy.successful?
+   326:         opts[:store] = opts.fetch(:store, winning_strategy.store?)
+   327:         set_user(winning_strategy.user, opts.merge!(:event => :authentication))
+(byebug) s
+
+[337, 346] in /home/sd2labs/.rvm/gems/ruby-2.3.1@aws-migration/gems/warden-1.2.6/lib/warden/proxy.rb
+   337:       [scope, opts]
+   338:     end
+   339: 
+   340:     # Run the strategies for a given scope
+   341:     def _run_strategies_for(scope, args) #:nodoc:
+=> 342:       self.winning_strategy = @winning_strategies[scope]
+   343:       return if winning_strategy && winning_strategy.halted?
+   344: 
+   345:       # Do not run any strategy if locked
+   346:       return if @locked
+(byebug) args
+[]
+(byebug) scope
+:user
+(byebug) @winning_strategies
+{}
+(byebug) @winning_strategies[scope]
+nil
+(byebug) n
+
+[338, 347] in /home/sd2labs/.rvm/gems/ruby-2.3.1@aws-migration/gems/warden-1.2.6/lib/warden/proxy.rb
+   338:     end
+   339: 
+   340:     # Run the strategies for a given scope
+   341:     def _run_strategies_for(scope, args) #:nodoc:
+   342:       self.winning_strategy = @winning_strategies[scope]
+=> 343:       return if winning_strategy && winning_strategy.halted?
+   344: 
+   345:       # Do not run any strategy if locked
+   346:       return if @locked
+   347: 
+(byebug) self
+Warden::Proxy:48090500 @config={:default_scope=>:admin_user, :scope_defaults=>{}, :default_strategies=>{:admin_user=>[:rememberable, :database_authenticatable], :user=>[:rememberable, :database_authenticatable]}, :intercept_401=>false, :failure_app=>#<Devise::Delegator:0x00000009d1c5a0>}
+(byebug) self.winning_strategy
+nil
+(byebug) n
+
+[341, 350] in /home/sd2labs/.rvm/gems/ruby-2.3.1@aws-migration/gems/warden-1.2.6/lib/warden/proxy.rb
+   341:     def _run_strategies_for(scope, args) #:nodoc:
+   342:       self.winning_strategy = @winning_strategies[scope]
+   343:       return if winning_strategy && winning_strategy.halted?
+   344: 
+   345:       # Do not run any strategy if locked
+=> 346:       return if @locked
+   347: 
+   348:       if args.empty?
+   349:         defaults   = @config[:default_strategies]
+   350:         strategies = defaults[scope] || defaults[:_all]
+(byebug) n
+
+[343, 352] in /home/sd2labs/.rvm/gems/ruby-2.3.1@aws-migration/gems/warden-1.2.6/lib/warden/proxy.rb
+   343:       return if winning_strategy && winning_strategy.halted?
+   344: 
+   345:       # Do not run any strategy if locked
+   346:       return if @locked
+   347: 
+=> 348:       if args.empty?
+   349:         defaults   = @config[:default_strategies]
+   350:         strategies = defaults[scope] || defaults[:_all]
+   351:       end
+   352: 
+(byebug) n
+
+[344, 353] in /home/sd2labs/.rvm/gems/ruby-2.3.1@aws-migration/gems/warden-1.2.6/lib/warden/proxy.rb
+   344: 
+   345:       # Do not run any strategy if locked
+   346:       return if @locked
+   347: 
+   348:       if args.empty?
+=> 349:         defaults   = @config[:default_strategies]
+   350:         strategies = defaults[scope] || defaults[:_all]
+   351:       end
+   352: 
+   353:       (strategies || args).each do |name|
+(byebug) n
+
+[345, 354] in /home/sd2labs/.rvm/gems/ruby-2.3.1@aws-migration/gems/warden-1.2.6/lib/warden/proxy.rb
+   345:       # Do not run any strategy if locked
+   346:       return if @locked
+   347: 
+   348:       if args.empty?
+   349:         defaults   = @config[:default_strategies]
+=> 350:         strategies = defaults[scope] || defaults[:_all]
+   351:       end
+   352: 
+   353:       (strategies || args).each do |name|
+   354:         strategy = _fetch_strategy(name, scope)
+(byebug) n
+
+[348, 357] in /home/sd2labs/.rvm/gems/ruby-2.3.1@aws-migration/gems/warden-1.2.6/lib/warden/proxy.rb
+   348:       if args.empty?
+   349:         defaults   = @config[:default_strategies]
+   350:         strategies = defaults[scope] || defaults[:_all]
+   351:       end
+   352: 
+=> 353:       (strategies || args).each do |name|
+   354:         strategy = _fetch_strategy(name, scope)
+   355:         next unless strategy && !strategy.performed? && strategy.valid?
+   356: 
+   357:         self.winning_strategy = @winning_strategies[scope] = strategy
+(byebug) defaults
+{:admin_user=>[:rememberable, :database_authenticatable], :user=>[:rememberable, :database_authenticatable]}
+(byebug) strategies
+[:rememberable, :database_authenticatable]
+(byebug) nn
+*** NameError Exception: undefined local variable or method `nn' for #<Warden::Proxy:0x00000005bb9b08>
+
+nil
+(byebug) n
+  User Load (1.0ms)  SELECT  "users".* FROM "users" WHERE "users"."email" = $1  ORDER BY "users"."id" ASC LIMIT 1  [["email", "aditya.srivastava@sd2labs.com"]]
+
+[320, 329] in /home/sd2labs/.rvm/gems/ruby-2.3.1@aws-migration/gems/warden-1.2.6/lib/warden/proxy.rb
+   320:       # Look for an existing user in the session for this scope.
+   321:       # If there was no user in the session. See if we can get one from the request.
+   322:       return user, opts if user = user(opts.merge(:scope => scope))
+   323:       _run_strategies_for(scope, args)
+   324: 
+=> 325:       if winning_strategy && winning_strategy.successful?
+   326:         opts[:store] = opts.fetch(:store, winning_strategy.store?)
+   327:         set_user(winning_strategy.user, opts.merge!(:event => :authentication))
+   328:       end
+   329: 
+(byebug) n
+
+[321, 330] in /home/sd2labs/.rvm/gems/ruby-2.3.1@aws-migration/gems/warden-1.2.6/lib/warden/proxy.rb
+   321:       # If there was no user in the session. See if we can get one from the request.
+   322:       return user, opts if user = user(opts.merge(:scope => scope))
+   323:       _run_strategies_for(scope, args)
+   324: 
+   325:       if winning_strategy && winning_strategy.successful?
+=> 326:         opts[:store] = opts.fetch(:store, winning_strategy.store?)
+   327:         set_user(winning_strategy.user, opts.merge!(:event => :authentication))
+   328:       end
+   329: 
+   330:       [@users[scope], opts]
+(byebug) n
+
+[322, 331] in /home/sd2labs/.rvm/gems/ruby-2.3.1@aws-migration/gems/warden-1.2.6/lib/warden/proxy.rb
+   322:       return user, opts if user = user(opts.merge(:scope => scope))
+   323:       _run_strategies_for(scope, args)
+   324: 
+   325:       if winning_strategy && winning_strategy.successful?
+   326:         opts[:store] = opts.fetch(:store, winning_strategy.store?)
+=> 327:         set_user(winning_strategy.user, opts.merge!(:event => :authentication))
+   328:       end
+   329: 
+   330:       [@users[scope], opts]
+   331:     end
+(byebug) s
+
+[160, 169] in /home/sd2labs/.rvm/gems/ruby-2.3.1@aws-migration/gems/warden-1.2.6/lib/warden/proxy.rb
+   160:     #   user - An object that has been setup to serialize into and out of the session.
+   161:     #   opts - An options hash.  Use the :scope option to set the scope of the user, set the :store option to false to skip serializing into the session, set the :run_callbacks to false to skip running the callbacks (the default is true).
+   162:     #
+   163:     # :api: public
+   164:     def set_user(user, opts = {})
+=> 165:       scope = (opts[:scope] ||= @config.default_scope)
+   166: 
+   167:       # Get the default options from the master configuration for the given scope
+   168:       opts = (@config[:scope_defaults][scope] || {}).merge(opts)
+   169:       opts[:event] ||= :set_user
+(byebug) n
+
+[163, 172] in /home/sd2labs/.rvm/gems/ruby-2.3.1@aws-migration/gems/warden-1.2.6/lib/warden/proxy.rb
+   163:     # :api: public
+   164:     def set_user(user, opts = {})
+   165:       scope = (opts[:scope] ||= @config.default_scope)
+   166: 
+   167:       # Get the default options from the master configuration for the given scope
+=> 168:       opts = (@config[:scope_defaults][scope] || {}).merge(opts)
+   169:       opts[:event] ||= :set_user
+   170:       @users[scope] = user
+   171: 
+   172:       if opts[:store] != false && opts[:event] != :fetch
+(byebug) n
+
+[164, 173] in /home/sd2labs/.rvm/gems/ruby-2.3.1@aws-migration/gems/warden-1.2.6/lib/warden/proxy.rb
+   164:     def set_user(user, opts = {})
+   165:       scope = (opts[:scope] ||= @config.default_scope)
+   166: 
+   167:       # Get the default options from the master configuration for the given scope
+   168:       opts = (@config[:scope_defaults][scope] || {}).merge(opts)
+=> 169:       opts[:event] ||= :set_user
+   170:       @users[scope] = user
+   171: 
+   172:       if opts[:store] != false && opts[:event] != :fetch
+   173:         options = env[ENV_SESSION_OPTIONS]
+(byebug) n
+
+[165, 174] in /home/sd2labs/.rvm/gems/ruby-2.3.1@aws-migration/gems/warden-1.2.6/lib/warden/proxy.rb
+   165:       scope = (opts[:scope] ||= @config.default_scope)
+   166: 
+   167:       # Get the default options from the master configuration for the given scope
+   168:       opts = (@config[:scope_defaults][scope] || {}).merge(opts)
+   169:       opts[:event] ||= :set_user
+=> 170:       @users[scope] = user
+   171: 
+   172:       if opts[:store] != false && opts[:event] != :fetch
+   173:         options = env[ENV_SESSION_OPTIONS]
+   174:         options[:renew] = true if options
+(byebug) n
+
+[167, 176] in /home/sd2labs/.rvm/gems/ruby-2.3.1@aws-migration/gems/warden-1.2.6/lib/warden/proxy.rb
+   167:       # Get the default options from the master configuration for the given scope
+   168:       opts = (@config[:scope_defaults][scope] || {}).merge(opts)
+   169:       opts[:event] ||= :set_user
+   170:       @users[scope] = user
+   171: 
+=> 172:       if opts[:store] != false && opts[:event] != :fetch
+   173:         options = env[ENV_SESSION_OPTIONS]
+   174:         options[:renew] = true if options
+   175:         session_serializer.store(user, scope)
+   176:       end
+(byebug) user
+#<User id: 1, name: nil, phone_number: "123456789", email: "aditya.srivastava@sd2labs.com", created_at: "2017-01-18 13:31:11", updated_at: "2017-01-18 13:31:37", opted_services: false, company_name: "sd2labs", currency_id: 1, verification_code: nil, is_verified: nil, website_link: nil>
+(byebug) @users
+{:user=>#<User id: 1, name: nil, phone_number: "123456789", email: "aditya.srivastava@sd2labs.com", created_at: "2017-01-18 13:31:11", updated_at: "2017-01-18 13:31:37", opted_services: false, company_name: "sd2labs", currency_id: 1, verification_code: nil, is_verified: nil, website_link: nil>}
+(byebug) opts
+{:scope=>:user, :recall=>"sessions#new", :store=>true, :event=>:authentication}
+(byebug) ENV_SESSION_OPTIONS
+"rack.session.options"
+
+
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+
+[170, 179] in /home/sd2labs/.rvm/gems/ruby-2.3.1@aws-migration/gems/warden-1.2.6/lib/warden/proxy.rb
+   170:       @users[scope] = user
+   171: 
+   172:       if opts[:store] != false && opts[:event] != :fetch
+   173:         options = env[ENV_SESSION_OPTIONS]
+   174:         options[:renew] = true if options
+=> 175:         session_serializer.store(user, scope)
+   176:       end
+   177: 
+   178:       run_callbacks = opts.fetch(:run_callbacks, true)
+   179:       manager._run_callbacks(:after_set_user, user, self, opts) if run_callbacks
+(byebug) s
+
+[40, 49] in /home/sd2labs/.rvm/gems/ruby-2.3.1@aws-migration/gems/warden-1.2.6/lib/warden/proxy.rb
+   40:     # Points to a SessionSerializer instance responsible for handling
+   41:     # everything related with storing, fetching and removing the user
+   42:     # session.
+   43:     # :api: public
+   44:     def session_serializer
+=> 45:       @session_serializer ||= Warden::SessionSerializer.new(@env)
+   46:     end
+   47: 
+   48:     # Clear the cache of performed strategies so far. Warden runs each
+   49:     # strategy just once during the request lifecycle. You can clear the
+(byebug) n
+
+[18, 27] in /home/sd2labs/.rvm/gems/ruby-2.3.1@aws-migration/gems/warden-1.2.6/lib/warden/session_serializer.rb
+   18:     def deserialize(key)
+   19:       key
+   20:     end
+   21: 
+   22:     def store(user, scope)
+=> 23:       return unless user
+   24:       method_name = "#{scope}_serialize"
+   25:       specialized = respond_to?(method_name)
+   26:       session[key_for(scope)] = specialized ? send(method_name, user) : serialize(user)
+   27:     end
+(byebug) user
+#<User id: 1, name: nil, phone_number: "123456789", email: "aditya.srivastava@sd2labs.com", created_at: "2017-01-18 13:31:11", updated_at: "2017-01-18 13:31:37", opted_services: false, company_name: "sd2labs", currency_id: 1, verification_code: nil, is_verified: nil, website_link: nil>
+(byebug) scope
+:user
+(byebug) n
+
+[19, 28] in /home/sd2labs/.rvm/gems/ruby-2.3.1@aws-migration/gems/warden-1.2.6/lib/warden/session_serializer.rb
+   19:       key
+   20:     end
+   21: 
+   22:     def store(user, scope)
+   23:       return unless user
+=> 24:       method_name = "#{scope}_serialize"
+   25:       specialized = respond_to?(method_name)
+   26:       session[key_for(scope)] = specialized ? send(method_name, user) : serialize(user)
+   27:     end
+   28: 
+(byebug) n
+
+[20, 29] in /home/sd2labs/.rvm/gems/ruby-2.3.1@aws-migration/gems/warden-1.2.6/lib/warden/session_serializer.rb
+   20:     end
+   21: 
+   22:     def store(user, scope)
+   23:       return unless user
+   24:       method_name = "#{scope}_serialize"
+=> 25:       specialized = respond_to?(method_name)
+   26:       session[key_for(scope)] = specialized ? send(method_name, user) : serialize(user)
+   27:     end
+   28: 
+   29:     def fetch(scope)
+(byebug) method_name
+"user_serialize"
+(byebug) n
+
+[21, 30] in /home/sd2labs/.rvm/gems/ruby-2.3.1@aws-migration/gems/warden-1.2.6/lib/warden/session_serializer.rb
+   21: 
+   22:     def store(user, scope)
+   23:       return unless user
+   24:       method_name = "#{scope}_serialize"
+   25:       specialized = respond_to?(method_name)
+=> 26:       session[key_for(scope)] = specialized ? send(method_name, user) : serialize(user)
+   27:     end
+   28: 
+   29:     def fetch(scope)
+   30:       key = session[key_for(scope)]
+(byebug) specialized
+true
+(byebug) key_for(scope)
+"warden.user.user.key"
+(byebug) s
+
+[43, 52] in /home/sd2labs/.rvm/gems/ruby-2.3.1@aws-migration/gems/warden-1.2.6/lib/warden/session_serializer.rb
+   43:     def delete(scope, user=nil)
+   44:       session.delete(key_for(scope))
+   45:     end
+   46: 
+   47:     # We can't cache this result because the session can be lazy loaded
+   48:     def session
+=> 49:       env["rack.session"] || {}
+   50:     end
+   51:   end # SessionSerializer
+   52: end # Warden
+(byebug) n
+
+[6, 15] in /home/sd2labs/.rvm/gems/ruby-2.3.1@aws-migration/gems/warden-1.2.6/lib/warden/session_serializer.rb
+    6:     def initialize(env)
+    7:       @env = env
+    8:     end
+    9: 
+   10:     def key_for(scope)
+=> 11:       "warden.user.#{scope}.key"
+   12:     end
+   13: 
+   14:     def serialize(user)
+   15:       user
+(byebug) n
+
+[104, 113] in /home/sd2labs/.rvm/gems/ruby-2.3.1@aws-migration/gems/actionpack-4.2.6/lib/action_dispatch/request/session.rb
+   104:       def values
+   105:         @delegate.values
+   106:       end
+   107: 
+   108:       def []=(key, value)
+=> 109:         load_for_write!
+   110:         @delegate[key.to_s] = value
+   111:       end
+   112: 
+   113:       def clear
+(byebug) n
+
+[105, 114] in /home/sd2labs/.rvm/gems/ruby-2.3.1@aws-migration/gems/actionpack-4.2.6/lib/action_dispatch/request/session.rb
+   105:         @delegate.values
+   106:       end
+   107: 
+   108:       def []=(key, value)
+   109:         load_for_write!
+=> 110:         @delegate[key.to_s] = value
+   111:       end
+   112: 
+   113:       def clear
+   114:         load_for_write!
+(byebug) n
+
+[173, 182] in /home/sd2labs/.rvm/gems/ruby-2.3.1@aws-migration/gems/warden-1.2.6/lib/warden/proxy.rb
+   173:         options = env[ENV_SESSION_OPTIONS]
+   174:         options[:renew] = true if options
+   175:         session_serializer.store(user, scope)
+   176:       end
+   177: 
+=> 178:       run_callbacks = opts.fetch(:run_callbacks, true)
+   179:       manager._run_callbacks(:after_set_user, user, self, opts) if run_callbacks
+   180: 
+   181:       @users[scope]
+   182:     end
+(byebug) 
+
+
+>>>>>>>>>>>>>>>>>>
+
+(byebug) opts
+{:scope=>:user, :recall=>"sessions#new", :store=>true, :event=>:authentication}
+(byebug) n
+
+[174, 183] in /home/sd2labs/.rvm/gems/ruby-2.3.1@aws-migration/gems/warden-1.2.6/lib/warden/proxy.rb
+   174:         options[:renew] = true if options
+   175:         session_serializer.store(user, scope)
+   176:       end
+   177: 
+   178:       run_callbacks = opts.fetch(:run_callbacks, true)
+=> 179:       manager._run_callbacks(:after_set_user, user, self, opts) if run_callbacks
+   180: 
+   181:       @users[scope]
+   182:     end
+   183: 
+(byebug) n
+   (0.3ms)  BEGIN
+  SQL (0.6ms)  UPDATE "users" SET "current_sign_in_at" = $1, "sign_in_count" = $2, "updated_at" = $3 WHERE "users"."id" = $4  [["current_sign_in_at", "2017-01-18 14:41:59.748605"], ["sign_in_count", 2], ["updated_at", "2017-01-18 14:41:59.757259"], ["id", 1]]
+   (63.4ms)  COMMIT
+
+[176, 185] in /home/sd2labs/.rvm/gems/ruby-2.3.1@aws-migration/gems/warden-1.2.6/lib/warden/proxy.rb
+   176:       end
+   177: 
+   178:       run_callbacks = opts.fetch(:run_callbacks, true)
+   179:       manager._run_callbacks(:after_set_user, user, self, opts) if run_callbacks
+   180: 
+=> 181:       @users[scope]
+   182:     end
+   183: 
+   184:     # Provides access to the user object in a given scope for a request.
+   185:     # Will be nil if not logged in. Please notice that this method does not
+(byebug) n
+
+[325, 334] in /home/sd2labs/.rvm/gems/ruby-2.3.1@aws-migration/gems/warden-1.2.6/lib/warden/proxy.rb
+   325:       if winning_strategy && winning_strategy.successful?
+   326:         opts[:store] = opts.fetch(:store, winning_strategy.store?)
+   327:         set_user(winning_strategy.user, opts.merge!(:event => :authentication))
+   328:       end
+   329: 
+=> 330:       [@users[scope], opts]
+   331:     end
+   332: 
+   333:     def _retrieve_scope_and_opts(args) #:nodoc:
+   334:       opts  = args.last.is_a?(Hash) ? args.pop : {}
+(byebug) n
+
+[100, 109] in /home/sd2labs/.rvm/gems/ruby-2.3.1@aws-migration/gems/warden-1.2.6/lib/warden/proxy.rb
+   100:     #   env['warden'].authenticate(:password, :basic, :scope => :sudo)
+   101:     #
+   102:     # :api: public
+   103:     def authenticate(*args)
+   104:       user, _opts = _perform_authentication(*args)
+=> 105:       user
+   106:     end
+   107: 
+   108:     # Same API as authenticated, but returns a boolean instead of a user.
+   109:     # The difference between this method (authenticate?) and authenticated?
+(byebug) user
+#<User id: 1, name: nil, phone_number: "123456789", email: "aditya.srivastava@sd2labs.com", created_at: "2017-01-18 13:31:11", updated_at: "2017-01-18 14:41:59", opted_services: false, company_name: "sd2labs", currency_id: 1, verification_code: nil, is_verified: nil, website_link: nil>
+(byebug) n
+
+[88, 97] in /home/sd2labs/.rvm/gems/ruby-2.3.1@aws-migration/gems/devise-4.2.0/app/controllers/devise_controller.rb
+   88:     raise AbstractController::ActionNotFound, msg
+   89:   end
+   90: 
+   91:   # Sets the resource creating an instance variable
+   92:   def resource=(new_resource)
+=> 93:     instance_variable_set(:"@#{resource_name}", new_resource)
+   94:   end
+   95: 
+   96:   # Helper for use in before_actions where no authentication is required.
+   97:   #
+
+
+>>>>>>>>>>>>>>>>>>>>>
+
+
+
