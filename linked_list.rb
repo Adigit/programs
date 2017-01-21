@@ -138,6 +138,25 @@ class LinkedList
     end
   end
 
+  def rotate(k)
+    return @head if k <= 0
+    current = @head
+    previous = nil
+    while k >= 1 && current
+      previous = current
+      current = current.next
+      k = k -1
+    end
+    return @head if current.nil?
+    previous.next = nil
+    new_head = current
+    until current.next.nil?
+      current = current.next
+    end
+    current.next = @head
+    new_head
+  end
+
   class << self
     def merge(list1_head, list2_head)
       current1 = list1_head
@@ -263,6 +282,7 @@ class LinkedList
       end
       result.reverse
     end
+
   end
 end
 
@@ -299,31 +319,34 @@ head = nil
 
 # LinkedList.print_list(LinkedList.merge(list1.head, list2.head))
 
-# list = LinkedList.new(nil)
-# list.push(11)
-# list.push(2)
-# list.push(3)
-# list.push(14)
-# list.push(7)
-# list.push(9)
-# list.push(13)
-# list.push(4)
+list = LinkedList.new(nil)
+list.push(11)
+list.push(2)
+list.push(3)
+list.push(14)
+list.push(7)
+list.push(9)
+list.push(13)
+list.push(4)
 # ##### Crete loop 
 # list.tail.next = list.search_node_by_value(14)
 # ##### Remove loop
 # list.remove_loop
-# LinkedList.print_list(list.head)
+
+LinkedList.print_list(list.head)
+p ">>>> "
+LinkedList.print_list list.rotate(3)
 #LinkedList.print_list(LinkedList.reverse_in_group_size(list.head, 3))
 #LinkedList.print_list(LinkedList.merge_sort(list.head))
 
-list1 = LinkedList.new(nil)
-list1.push(2)
-list1.push(8)
-list1.push(9)
+# list1 = LinkedList.new(nil)
+# list1.push(2)
+# list1.push(8)
+# list1.push(9)
 
-list2 = LinkedList.new(nil)
-list2.push(3)
-list2.push(4)
-list2.push(7)
+# list2 = LinkedList.new(nil)
+# list2.push(3)
+# list2.push(4)
+# list2.push(7)
 
-LinkedList.print_list LinkedList.add(list1, list2)
+# LinkedList.print_list LinkedList.add(list1, list2)
