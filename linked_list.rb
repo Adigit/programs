@@ -157,6 +157,37 @@ class LinkedList
     new_head
   end
 
+  def absolute_sorting
+    current = @head
+    @negative_values_list_head = nil
+    @positive_values_list_head = nil
+    p_current = nil
+    n_current = nil
+    temp = nil
+    while current
+      temp = current.next
+      current.next = nil
+      if current.value > 0
+        if @positive_values_list_head.nil?
+          @positive_values_list_head = current
+        else
+          p_current.next = current
+        end
+        p_current = current
+      else
+        if @negative_values_list_head.nil?
+          @negative_values_list_head = current
+        else
+          current.next = n_current
+        end
+        n_current = current
+      end
+      current = temp  
+    end
+    @negative_values_list_head.next = @positive_values_list_head unless @negative_values_list_head.nil?
+    @head = n_current.nil? ? @positive_values_list_head : n_current
+  end
+
   class << self
     def merge(list1_head, list2_head)
       current1 = list1_head
@@ -319,23 +350,23 @@ head = nil
 
 # LinkedList.print_list(LinkedList.merge(list1.head, list2.head))
 
-list = LinkedList.new(nil)
-list.push(11)
-list.push(2)
-list.push(3)
-list.push(14)
-list.push(7)
-list.push(9)
-list.push(13)
-list.push(4)
-# ##### Crete loop 
-# list.tail.next = list.search_node_by_value(14)
-# ##### Remove loop
-# list.remove_loop
+# list = LinkedList.new(nil)
+# list.push(11)
+# list.push(2)
+# list.push(3)
+# list.push(14)
+# list.push(7)
+# list.push(9)
+# list.push(13)
+# list.push(4)
+# # ##### Crete loop 
+# # list.tail.next = list.search_node_by_value(14)
+# # ##### Remove loop
+# # list.remove_loop
 
-LinkedList.print_list(list.head)
-p ">>>> "
-LinkedList.print_list list.rotate(3)
+# LinkedList.print_list(list.head)
+# p ">>>> "
+# LinkedList.print_list list.rotate(3)
 #LinkedList.print_list(LinkedList.reverse_in_group_size(list.head, 3))
 #LinkedList.print_list(LinkedList.merge_sort(list.head))
 
@@ -350,3 +381,14 @@ LinkedList.print_list list.rotate(3)
 # list2.push(7)
 
 # LinkedList.print_list LinkedList.add(list1, list2)
+
+list = LinkedList.new(nil)
+list.push(1)
+list.push(-2)
+list.push(-3)
+list.push(4)
+list.push(-7)
+list.push(9)
+list.push(13)
+list.push(-14)
+LinkedList.print_list list.absolute_sorting
