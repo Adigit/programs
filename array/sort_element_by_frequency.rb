@@ -1,8 +1,42 @@
-class Node
-  attr_accessor :frequency, :index
-  def initialize(index)
+class NodeObj
+  attr_accessor :value, :frequency, :index, :left, :right
+  def initialize(value, index)
+    @value = value
     @frequency =  1
     @index =  index
+    @left = nil
+    @right = nil
+  end
+end
+
+class BSTree
+  def initialize(node)
+    @root = node
+  end
+
+  def insert(root = @root, node)
+    if root.value < node.value
+      if root.right.nil?
+        root.right = node
+        return
+      end
+      insert(root.right, node)
+    elsif root.value > node.value
+      if root.left.nil?
+        root.left = node
+        return
+      end
+      root.left = insert(root.left, node)
+    elsif root.value == node.value
+      root.frequency += 1
+    end
+  end
+
+  def inOrderTraversal(node = @root)
+    return if node.nil?
+    inOrderTraversal(node.left)
+    p "node > #{node.value.inspect} >"
+    inOrderTraversal(node.right)
   end
 end
 
@@ -87,8 +121,20 @@ class SortElementBYFrequency
     end
     p @arr
   end
+
+  ####### BST approach ########
+
+  def create_bst
+    bst = BSTree.new(NodeObj.new(@arr.first, 0))
+    @arr[1..@arr.size].each_with_index do |a, i|
+      i += 1
+      bst.insert(NodeObj.new(a, i))
+    end
+    bst.inOrderTraversal
+  end
 end
 
 o = SortElementBYFrequency.new([2,5,2,8,5,6,8,8])
-o.sort_by_freq
+#o.sort_by_freq
+o.create_bst
 
